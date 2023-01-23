@@ -16,6 +16,17 @@ To generate the TypeScript code, you can use the following command:
 ```
 tsc
 ```
+Before you can start the project, you will need to copy the config.example.json file to config.json and fill in the necessary fields.
+You can do this by running the following command:
+```
+cp config.example.json config.json
+```
+You should fill in the following fields:
+- tendermintRpc
+- contracts_owner
+
+You can also add more private keys under the contracts_owner field.
+
 Finally, you can start the project by running:
 ```
 npm start
