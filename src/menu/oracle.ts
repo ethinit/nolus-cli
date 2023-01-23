@@ -142,7 +142,7 @@ class MenuOracle {
                 const { feederAddress } = await prompt([
                     {
                         type: 'list',
-                        name: 'feeder',
+                        name: 'feederAddress',
                         message: 'Select feeder to remove',
                         choices: [...feeders, new inquirer.Separator(), 'Back']
                     }
