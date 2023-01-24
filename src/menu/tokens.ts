@@ -62,6 +62,7 @@ class MenuTokens {
         try {
             const wallet: NolusWallet = await NolusHelper.getWallet(privateKey);
             console.log(`Showing balances of ${wallet.address}`);
+            console.log(NolusHelper.coins);
             console.log("USDC: 22");
             console.log("WBTC: 22");
             console.log("WETH: 22");
