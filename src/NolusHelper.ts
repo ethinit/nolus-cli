@@ -41,12 +41,9 @@ const NolusHelper = new class {
         return this.oracle;
     }
 
-    getNolusClient() {
-        return NolusClient.getInstance();
-    }
 
     getCosmWasmClient(): Promise<CosmWasmClient> {
-        return this.getNolusClient().getCosmWasmClient();
+        return NolusClient.getInstance().getCosmWasmClient();
     }
 
     makeIBCMinimalDenom(sourceChannelId: string[], coinMinimalDenom: string): string {
