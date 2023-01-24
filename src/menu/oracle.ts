@@ -1,7 +1,7 @@
 import { NolusWallet } from '@nolus/nolusjs';
 import { OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
 import { prompt } from 'inquirer';
-import { config, NolusHelper } from '../stub';
+import { NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
 const inquirer = require('inquirer');
 
@@ -48,7 +48,7 @@ class MenuOracle {
 
     async showConfig() {
         const oracle = await NolusHelper.getOracle();
-        const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(config.keys.contracts_owner);
+        const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
 
         while (true) {
             console.log();
@@ -99,7 +99,7 @@ class MenuOracle {
 
     async showFeeders() {
         const oracle = await NolusHelper.getOracle();
-        const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(config.keys.contracts_owner);
+        const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
 
         while (true) {
             console.log();

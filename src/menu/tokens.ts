@@ -1,7 +1,7 @@
 import { NolusWallet } from '@nolus/nolusjs';
 import { prompt } from 'inquirer';
+import { NolusHelper } from '../NolusHelper';
 const inquirer = require('inquirer');
-import { config, NolusHelper } from '../stub';
 
 
 class MenuTokens {
@@ -41,8 +41,8 @@ class MenuTokens {
         console.log();
 
         let choices = [];
-        for (let accountName in config.keys) {
-            choices.push({ name: accountName, value: config.keys[accountName] },);
+        for (let accountName in NolusHelper.config.keys) {
+            choices.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
         }
 
         const { menuChoice } = await prompt([
