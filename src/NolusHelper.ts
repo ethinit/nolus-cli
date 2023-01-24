@@ -72,40 +72,6 @@ const NolusHelper = new class {
 
         return coins;
     }
-    /*
-        get currencies () {
-    
-        }
-    
-    
-        for (const key in CURRENCIES.currencies) {
-            const currency =
-              CURRENCIES.currencies[key as keyof typeof CURRENCIES.currencies];
-            const ibcDenom = AssetUtils.makeIBCMinimalDenom(
-              currency.ibc_route,
-              currency.symbol
-            );
-            ibcBalances.push(
-              NolusClient.getInstance()
-                .getBalance(walletAddress, ibcDenom)
-                .then((item) => {
-                  const data = {
-                    ticker: key,
-                    name: currency.name,
-                    symbol: currency.symbol,
-                    decimal_digits: currency.decimal_digits,
-                    groups: currency.groups,
-                    swap_routes: currency.swap_routes,
-                  };
-                  this.currencies[ibcDenom] = data;
-                  return {
-                    balance: CurrencyUtils.convertCosmosCoinToKeplCoin(item),
-                  };
-                })
-            );
-          }
-          this.balances = await Promise.all(ibcBalances);
-          */
 }
 
 export { NolusHelper, Coin }
