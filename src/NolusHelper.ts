@@ -59,7 +59,7 @@ const NolusHelper = new class {
         );
     }
 
-    get coins(): Coin[] {
+    getCoins(): Coin[] {
 
         let coins: Coin[] = [];
         this.config.coins.forEach(coin => {
@@ -108,4 +108,4 @@ const NolusHelper = new class {
           */
 }
 
-export { NolusHelper }
+export { NolusHelper, Coin }
