@@ -1,6 +1,7 @@
 import { NolusClient, NolusWallet } from '@nolus/nolusjs';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
+import { MenuUtil } from './util';
 const inquirer = require('inquirer');
 
 
@@ -28,7 +29,7 @@ class MenuTokens {
             }
 
             if (menuChoice === 'balances') {
-                await this.showBalances(await this.selectAccount());
+                await this.showBalances(await this.selectAddress());
             }
             else if (menuChoice === 'transfer') {
                 await this.showTransfer();
@@ -37,7 +38,7 @@ class MenuTokens {
         }
     }
 
-    async selectAccount(): Promise<string> {
+    async selectAddress(): Promise<string> {
         console.log();
 
         let choices = [];
@@ -45,7 +46,10 @@ class MenuTokens {
             choices.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
         }
 
-        const { menuChoice } = await prompt([
+        choices.push(new inquirer.Separator());
+        choices.push("Other");
+
+        let { menuChoice } = await prompt([
             {
                 type: 'list',
                 name: 'menuChoice',
@@ -54,31 +58,31 @@ class MenuTokens {
             }
         ]);
 
+        if (menuChoice === 'Other') {
+            menuChoice = await MenuUtil.askString("Enter address");
+        }
+        else {
+            menuChoice = (await NolusHelper.getWallet(menuChoice)).address;
+        }
+
         return menuChoice;
 
     }
 
-    async showBalances(privateKey: string) {
-        try {
-            const wallet: NolusWallet = await NolusHelper.getWallet(privateKey);
-            console.log();
-            console.log(`Showing balances of ${wallet.address}`);
-            const coins: Coin[] = NolusHelper.getCoins();
-            for (let i in coins) {
-                const coin: Coin = coins[i];
-                const { amount } = await NolusClient.getInstance().getBalance(wallet.address, coin.denom);
-                if (parseInt(amount) > 0) {
-                    console.log(
-                        NolusHelper.amountFormatter.format(parseInt(amount) / Math.pow(10, coin.decimal_digits))
-                        + " " + coin.symbol
-                    );
-                }
+    async showBalances(address: string) {
+        console.log();
+        console.log(`Showing balances of ${address}`);
+        const coins: Coin[] = NolusHelper.getCoins();
+        for (let i in coins) {
+            const coin: Coin = coins[i];
+            const { amount } = await NolusClient.getInstance().getBalance(address, coin.denom);
+            if (parseInt(amount) > 0) {
+                console.log(
+                    NolusHelper.amountFormatter.format(parseInt(amount) / Math.pow(10, coin.decimal_digits))
+                    + " " + coin.symbol
+                );
             }
         }
-        catch (ex) {
-            console.log(ex);
-        }
-
     }
 
     async showTransfer() {
