@@ -79,6 +79,21 @@ const NolusHelper = new class {
 
         return coins;
     }
+
+    async getCoinsAmounts(address: string, coins: Coin[]): Promise<{ coin: Coin, amount: number, address: string }[]> {
+        let response = [];
+        for (let i in coins) {
+            const coin: Coin = coins[i];
+            const { amount } = await NolusClient.getInstance().getBalance(address, coin.denom);
+            response.push({
+                address: address,
+                coin: coin,
+                amount: amount
+            })
+        }
+
+        return response;
+    }
 }
 
 export { NolusHelper, Coin }

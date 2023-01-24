@@ -73,13 +73,15 @@ class MenuTokens {
         console.log();
         console.log(`Showing balances of ${address}`);
         const coins: Coin[] = NolusHelper.getCoins();
-        for (let i in coins) {
-            const coin: Coin = coins[i];
-            const { amount } = await NolusClient.getInstance().getBalance(address, coin.denom);
-            if (parseInt(amount) > 0) {
+        const amounts = await NolusHelper.getCoinsAmounts(address, coins);
+
+        for (let i in amounts) {
+            const el = amounts[i];
+
+            if (el.amount > 0) {
                 console.log(
-                    NolusHelper.amountFormatter.format(parseInt(amount) / Math.pow(10, coin.decimal_digits))
-                    + " " + coin.symbol
+                    NolusHelper.amountFormatter.format(el.amount / Math.pow(10, el.coin.decimal_digits))
+                    + " " + el.coin.symbol
                 );
             }
         }
