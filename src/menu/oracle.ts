@@ -139,16 +139,19 @@ class MenuOracle {
             else if (menuChoice === 'remove') {
                 const feeders: string[] = await oracle.getFeeders();
                 console.log();
-                const { feederAddress } = await prompt([
+                let { feederAddress } = await prompt([
                     {
                         type: 'list',
                         name: 'feederAddress',
                         message: 'Select feeder to remove',
-                        choices: [...feeders, new inquirer.Separator(), 'Back']
+                        choices: [...feeders, new inquirer.Separator(), 'Other', 'Back']
                     }
                 ]);
                 if (feederAddress === 'Back') {
                     continue;
+                }
+                else if (feederAddress === 'Other') {
+                    feederAddress = await MenuUtil.askString("Enter feeder address to remove");
                 }
 
                 await oracle.removeFeeder(contractsOwnerWallet, feederAddress, "auto")
