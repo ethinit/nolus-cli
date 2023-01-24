@@ -6,5 +6,102 @@
     },
     "contracts": {
         "oracle": "nolus1436kxs0w2es6xlqpp9rd35e3d0cjnw4sv8j3a7483sgks29jqwgsv3wzl4"
-    }
+    },
+    "coins": [
+        {
+            "symbol": "NLS",
+            "minimal_denom": "unls",
+            "decimal_digits": "6",
+            "ibc_route": []
+        },
+        {
+            "symbol": "USDC",
+            "minimal_denom": "uusdc",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0",
+                "channel-208"
+            ]
+        },
+        {
+            "symbol": "ATOM",
+            "minimal_denom": "uatamo",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0",
+                "channel-0"
+            ]
+        },
+        {
+            "symbol": "OSMO",
+            "minimal_denom": "uosmo",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0"
+            ]
+        },
+        {
+            "symbol": "WETH",
+            "minimal_denom": "weth-wei",
+            "decimal_digits": "18",
+            "ibc_route": [
+                "channel-0",
+                "channel-208"
+            ]
+        },
+        {
+            "symbol": "WBTC",
+            "minimal_denom": "wbtc-satoshi",
+            "decimal_digits": "8",
+            "ibc_route": [
+                "channel-0",
+                "channel-208"
+            ]
+        },
+        {
+            "symbol": "EVMOS",
+            "minimal_denom": "aevmos",
+            "decimal_digits": "18",
+            "ibc_route": [
+                "channel-0",
+                "channel-204"
+            ]
+        },
+        {
+            "symbol": "JUNO",
+            "minimal_denom": "ujuno",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0",
+                "channel-42"
+            ]
+        },
+        {
+            "symbol": "STARS",
+            "minimal_denom": "ustars",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0",
+                "channel-75"
+            ]
+        },
+        {
+            "symbol": "CRO",
+            "minimal_denom": "basecro",
+            "decimal_digits": "8",
+            "ibc_route": [
+                "channel-0",
+                "channel-5"
+            ]
+        },
+        {
+            "symbol": "SCRT",
+            "minimal_denom": "uscrt",
+            "decimal_digits": "6",
+            "ibc_route": [
+                "channel-0",
+                "channel-88"
+            ]
+        }
+    ]
 }
