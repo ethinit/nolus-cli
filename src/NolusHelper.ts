@@ -18,6 +18,13 @@ interface Coin {
 }
 
 const NolusHelper = new class {
+    public amountFormatter = new Intl.NumberFormat("en-US", {
+        style: "decimal",
+        useGrouping: true,
+        maximumFractionDigits: 8,
+        minimumFractionDigits: 2
+    });
+
     async getWallet(privateKey: string): Promise<NolusWallet> {
         const offlineSigner = await DirectSecp256k1Wallet.fromKey(
             fromHex(privateKey),

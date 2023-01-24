@@ -1,6 +1,6 @@
-import { NolusWallet } from '@nolus/nolusjs';
+import { NolusClient, NolusWallet } from '@nolus/nolusjs';
 import { prompt } from 'inquirer';
-import { NolusHelper } from '../NolusHelper';
+import { Coin, NolusHelper } from '../NolusHelper';
 const inquirer = require('inquirer');
 
 
@@ -61,11 +61,19 @@ class MenuTokens {
     async showBalances(privateKey: string) {
         try {
             const wallet: NolusWallet = await NolusHelper.getWallet(privateKey);
+            console.log();
             console.log(`Showing balances of ${wallet.address}`);
-            console.log(NolusHelper.coins);
-            console.log("USDC: 22");
-            console.log("WBTC: 22");
-            console.log("WETH: 22");
+            const coins: Coin[] = NolusHelper.getCoins();
+            for (let i in coins) {
+                const coin: Coin = coins[i];
+                const { amount } = await NolusClient.getInstance().getBalance(wallet.address, coin.denom);
+                if (parseInt(amount) > 0) {
+                    console.log(
+                        NolusHelper.amountFormatter.format(parseInt(amount) / Math.pow(10, coin.decimal_digits))
+                        + " " + coin.symbol
+                    );
+                }
+            }
         }
         catch (ex) {
             console.log(ex);
