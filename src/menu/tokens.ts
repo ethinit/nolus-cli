@@ -29,7 +29,7 @@ class MenuTokens {
             }
 
             if (menuChoice === 'balances') {
-                await this.showBalances(await this.selectAddress());
+                await this.showBalances(await this.selectAddress(true));
             }
             else if (menuChoice === 'transfer') {
                 await this.showTransfer();
@@ -38,7 +38,7 @@ class MenuTokens {
         }
     }
 
-    async selectAddress(): Promise<string> {
+    async selectAddress(showOther: boolean = false): Promise<string> {
         console.log();
 
         let choices = [];
@@ -58,7 +58,7 @@ class MenuTokens {
             }
         ]);
 
-        if (menuChoice === 'Other') {
+        if (showOther && menuChoice === 'Other') {
             menuChoice = await MenuUtil.askString("Enter address");
         }
         else {
