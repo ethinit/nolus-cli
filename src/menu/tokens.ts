@@ -2,6 +2,7 @@ import { NolusClient, NolusWallet } from '@nolus/nolusjs';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
+import { Coin as SendCoin } from "@cosmjs/stargate";
 const inquirer = require('inquirer');
 
 
@@ -29,7 +30,7 @@ class MenuTokens {
             }
 
             if (menuChoice === 'balances') {
-                await this.showBalances(await this.selectAddress(true));
+                await this.showBalances();
             }
             else if (menuChoice === 'transfer') {
                 await this.showTransfer();
@@ -38,38 +39,32 @@ class MenuTokens {
         }
     }
 
-    async selectAddress(showOther: boolean = false): Promise<string> {
-        console.log();
 
-        let choices = [];
+    async showBalances() {
+        let accounts = [];
         for (let accountName in NolusHelper.config.keys) {
-            choices.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
+            accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
         }
 
-        choices.push(new inquirer.Separator());
-        choices.push("Other");
+        console.log();
 
-        let { menuChoice } = await prompt([
+        let { accountPk } = await prompt([
             {
                 type: 'list',
-                name: 'menuChoice',
+                name: 'accountPk',
                 message: 'Select Account',
-                choices: choices
+                choices: [...accounts, new inquirer.Separator(), "Other"]
             }
         ]);
 
-        if (showOther && menuChoice === 'Other') {
-            menuChoice = await MenuUtil.askString("Enter address");
+        let address: string;
+        if (accountPk === 'Other') {
+            address = await MenuUtil.askString("Enter address");
         }
         else {
-            menuChoice = (await NolusHelper.getWallet(menuChoice)).address;
+            address = (await NolusHelper.getWallet(accountPk)).address;
         }
 
-        return menuChoice;
-
-    }
-
-    async showBalances(address: string) {
         console.log();
         console.log(`Showing balances of ${address}`);
         const coins: Coin[] = NolusHelper.getCoins();
@@ -88,26 +83,65 @@ class MenuTokens {
     }
 
     async showTransfer() {
-        console.log("Not implemented");
-        return;
-        while (true) {
-            console.log();
-            const { menuChoice } = await prompt([
-                {
-                    type: 'list',
-                    name: 'menuChoice',
-                    message: '[Tokens -> Transfer]',
-                    choices: [
-                        new inquirer.Separator(),
-                        { name: 'Back', value: 'back' }
-                    ]
-                }
-            ]);
 
-            if (menuChoice === 'back') {
-                return;
-            }
+        let accounts = [];
+        for (let accountName in NolusHelper.config.keys) {
+            accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
         }
+
+        let { account } = await prompt([
+            {
+                type: 'list',
+                name: 'account',
+                message: "Select account to send from",
+                choices: accounts
+            }
+        ]);
+
+        const wallet = await NolusHelper.getWallet(account);
+
+
+        const coins: Coin[] = NolusHelper.getCoins();
+        const amounts = await NolusHelper.getCoinsAmounts(wallet.address, coins);
+        let choices = [];
+        for (let i in amounts) {
+            const el = amounts[i];
+
+            if (el.amount > 0) {
+                choices.push({ name: el.coin.symbol + ` (max ${NolusHelper.amountFormatter.format(el.amount / Math.pow(10, el.coin.decimal_digits))})`, value: el });
+            }
+
+        }
+        console.log();
+        let { coinChoice } = await prompt([
+            {
+                type: 'list',
+                name: 'coinChoice',
+                message: 'Select coin to send',
+                choices: [...choices, new inquirer.Separator(), 'Back']
+            }
+        ]);
+        if (coinChoice === 'Back') {
+            return;
+        }
+
+        const { amount } = await prompt([
+            {
+                type: 'input',
+                name: 'amount',
+                message: `Enter the amount of ${coinChoice.coin.symbol} you would like to send (max ${NolusHelper.amountFormatter.format(coinChoice.amount / Math.pow(10, coinChoice.coin.decimal_digits))})`,
+            }
+        ]);
+
+        const recipientAddress = await MenuUtil.askString("Enter recipient address");
+
+
+        await wallet.sendTokens(wallet.address, recipientAddress, [{
+            denom: coinChoice.coin.denom,
+            amount: (parseInt(amount) * Math.pow(10, coinChoice.coin.decimal_digits)).toFixed(0)
+        }], 500)
+            .then((obj) => console.log(`Successfully transferred ${amount} ${coinChoice.coin.symbol} to address ${recipientAddress}.`))
+            .catch(console.error);
     }
 
 
