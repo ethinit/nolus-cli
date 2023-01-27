@@ -66,18 +66,34 @@ const NolusHelper = new class {
         );
     }
 
+    private _coins: Coin[];
     getCoins(): Coin[] {
+        if (this._coins) {
+            return this._coins;
+        }
 
-        let coins: Coin[] = [];
+        this._coins = [];
         this.config.coins.forEach(coin => {
-            coins.push({
+            this._coins.push({
                 denom: this.makeIBCMinimalDenom(coin.ibc_route, coin.minimal_denom),
                 symbol: coin.symbol,
                 decimal_digits: coin.decimal_digits
             })
         });
 
-        return coins;
+        return this._coins;
+    }
+
+    getCoinBySymbol(symbol: string): Coin | undefined {
+        const coins: Coin[] = this.getCoins();
+        for (let i in coins) {
+            const coin = coins[i];
+
+            if (coin.symbol.toUpperCase() === symbol.toUpperCase()) {
+                return coin;
+            }
+        }
+
     }
 
     async getCoinsAmounts(address: string, coins: Coin[]): Promise<{ coin: Coin, amount: number }[]> {

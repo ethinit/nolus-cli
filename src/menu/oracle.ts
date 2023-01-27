@@ -1,7 +1,7 @@
 import { NolusWallet } from '@nolus/nolusjs';
 import { OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
 import { prompt } from 'inquirer';
-import { NolusHelper } from '../NolusHelper';
+import { Coin, NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
 const inquirer = require('inquirer');
 
@@ -27,6 +27,7 @@ class MenuOracle {
                     choices: [
                         { name: 'Config', value: 'config' },
                         { name: 'Feeders', value: 'feeders' },
+                        { name: 'Prices', value: 'prices' },
                         new inquirer.Separator(),
                         { name: 'Back', value: 'back' }
                     ]
@@ -42,6 +43,9 @@ class MenuOracle {
             }
             else if (menuChoice === 'feeders') {
                 await this.showFeeders();
+            }
+            else if (menuChoice === 'prices') {
+                await this.showPrices();
             }
         }
     }
@@ -159,6 +163,73 @@ class MenuOracle {
                     .catch(this.displayOracleError);
             }
 
+        }
+    }
+
+
+    async showPrices() {
+        const oracle = await NolusHelper.getOracle();
+        //const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
+
+        while (true) {
+            console.log();
+            const { menuChoice } = await prompt([
+                {
+                    type: 'list',
+                    name: 'menuChoice',
+                    message: '[Oracle Contract -> Prices]',
+                    choices: [
+                        { name: 'Show', value: 'show' },
+                        { name: 'Update', value: 'update' },
+                        new inquirer.Separator(),
+                        { name: 'Back', value: 'back' }
+                    ]
+                }
+            ]);
+
+            if (menuChoice === 'back') {
+                return;
+            }
+
+            if (menuChoice === 'show') {
+                let symbols = [];
+                let coins: Coin[] = NolusHelper.getCoins();
+
+                for (let i in coins) {
+                    let symbol: string = coins[i].symbol;
+                    if (["NLS"].indexOf(symbol) > -1) {
+                        continue; // not supported token
+                    }
+                    symbols.push(symbol);
+                }
+
+                /**
+                 * @todo oracle.getPricesFor return is not corrent
+                 */
+                const prices = (await oracle.getPricesFor(symbols))["prices"];
+                for (let i in prices) {
+                    const price = prices[i];
+                    const baseCoin: Coin | undefined = NolusHelper.getCoinBySymbol(price.amount.ticker);
+                    if (!baseCoin) {
+                        throw `Unexpected Error! Coin ${price.amount.ticker} was not found.`
+                    }
+                    const quoteToken: Coin | undefined = NolusHelper.getCoinBySymbol(price.amount_quote.ticker);
+                    if (!quoteToken) {
+                        throw `Unexpected Error! Coin ${price.amount_quote.ticker} was not found.`
+                    }
+
+                    console.log(
+                        price.amount.ticker + " - " +
+                        (price.amount_quote.amount / price.amount.amount * Math.pow(10, baseCoin.decimal_digits - quoteToken.decimal_digits)).toFixed(4) +
+                        price.amount_quote.ticker);
+
+                }
+
+
+            }
+            else if (menuChoice === 'update') {
+                console.log("not inmplemented");
+            }
         }
     }
 }
