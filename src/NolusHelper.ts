@@ -6,6 +6,7 @@ import { nolusOfflineSigner } from "@nolus/nolusjs/build/wallet/NolusWalletFacto
 import { fromHex } from '@cosmjs/encoding';
 import { Buffer } from "buffer";
 import { Hash } from "@keplr-wallet/crypto";
+import { prompt } from 'inquirer';
 
 const config = require("../config.json");
 
@@ -94,6 +95,24 @@ const NolusHelper = new class {
             }
         }
 
+    }
+
+    async promptAccount(): Promise<NolusWallet> {
+        let accounts = [];
+        for (let accountName in NolusHelper.config.keys) {
+            accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] });
+        }
+
+        const { account } = await prompt([
+            {
+                type: 'list',
+                name: 'account',
+                message: "Select account to send from",
+                choices: accounts
+            }
+        ]);
+
+        return await this.getWallet(account);
     }
 
     async getCoinsAmounts(address: string, coins: Coin[]): Promise<{ coin: Coin, amount: number }[]> {

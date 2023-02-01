@@ -1,8 +1,7 @@
-import { NolusClient, NolusWallet } from '@nolus/nolusjs';
+import { NolusWallet } from '@nolus/nolusjs';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
-import { Coin as SendCoin } from "@cosmjs/stargate";
 const inquirer = require('inquirer');
 
 
@@ -83,22 +82,7 @@ class MenuTokens {
     }
 
     async showTransfer() {
-
-        let accounts = [];
-        for (let accountName in NolusHelper.config.keys) {
-            accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
-        }
-
-        let { account } = await prompt([
-            {
-                type: 'list',
-                name: 'account',
-                message: "Select account to send from",
-                choices: accounts
-            }
-        ]);
-
-        const wallet = await NolusHelper.getWallet(account);
+        const wallet: NolusWallet = await NolusHelper.promptAccount();
 
 
         const coins: Coin[] = NolusHelper.getCoins();
