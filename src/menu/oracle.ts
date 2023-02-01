@@ -1,5 +1,5 @@
 import { NolusWallet } from '@nolus/nolusjs';
-import { OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
+import { FeedPrices, OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
@@ -52,7 +52,7 @@ class MenuOracle {
 
     async showConfig() {
         const oracle = await NolusHelper.getOracle();
-        const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
+        const contractsOwnerWallet: NolusWallet = await NolusHelper.promptAccount();
 
         while (true) {
             console.log();
@@ -228,7 +228,34 @@ class MenuOracle {
 
             }
             else if (menuChoice === 'update') {
-                console.log("not inmplemented");
+                // [{"amount":{"amount":"222230059563565033011564326157","ticker":"WETH"},"amount_quote":{"amount":"350390703125000000000","ticker":"USDC"}}]
+
+                const contractsOwnerWallet: NolusWallet = await NolusHelper.promptAccount("Select feeder account");
+                let feedPrices: FeedPrices = {
+                    prices: []
+                };
+                while (true) {
+                    let pricesInput: string = await MenuUtil.askString("Enter JSON prices or type \"back\"");
+                    if (pricesInput.toLowerCase() === "back") {
+                        break;
+                    }
+                    try {
+                        /**
+                         * @todo wrong name "price" insteadof "prices"
+                         */
+                        feedPrices["price"] = JSON.parse(pricesInput);
+                        console.log(feedPrices);
+                        await oracle.feedPrices(contractsOwnerWallet, feedPrices, "auto")
+                            .then(() => console.log(`Preces are updated successfully`))
+                            .catch(this.displayOracleError);
+                        break;
+                    }
+                    catch (error) {
+                        console.error("Invalid JSON: " + error)
+                    }
+                }
+
+
             }
         }
     }
