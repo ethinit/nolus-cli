@@ -97,7 +97,7 @@ const NolusHelper = new class {
 
     }
 
-    async promptAccount(): Promise<NolusWallet> {
+    async promptAccount(msg: string = "Select account"): Promise<NolusWallet> {
         let accounts = [];
         for (let accountName in NolusHelper.config.keys) {
             accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] });
@@ -107,7 +107,7 @@ const NolusHelper = new class {
             {
                 type: 'list',
                 name: 'account',
-                message: "Select account to send from",
+                message: msg,
                 choices: accounts
             }
         ]);

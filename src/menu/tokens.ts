@@ -82,7 +82,7 @@ class MenuTokens {
     }
 
     async showTransfer() {
-        const wallet: NolusWallet = await NolusHelper.promptAccount();
+        const wallet: NolusWallet = await NolusHelper.promptAccount("Select account to send from");
 
 
         const coins: Coin[] = NolusHelper.getCoins();
