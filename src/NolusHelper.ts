@@ -61,7 +61,7 @@ const NolusHelper = new class {
     private lpp: Promise<Lpp>;
     getLpp(): Promise<Lpp> {
         if (typeof this.lpp === "undefined") {
-            this.lpp = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, config.contracts.treasury));
+            this.lpp = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, config.contracts.lpp));
         }
 
         return this.lpp;
