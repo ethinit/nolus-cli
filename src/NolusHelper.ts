@@ -58,17 +58,13 @@ const NolusHelper = new class {
         return this.treasury;
     }
 
-    private lpp: Promise<Lpp>;
-    getLpp(ticker: string): Promise<Lpp> {
-        if (typeof this.lpp === "undefined") {
-            const lppAddress = this.config?.contracts?.lpps[ticker];
-            if (!lppAddress) {
-                throw `Contract address for LPP ${ticker} is not defined in config.json`
-            }
-            this.lpp = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, lppAddress));
+    private lpps: { [address: string]: Promise<Lpp> };
+    getLpp(address: string): Promise<Lpp> {
+        if (typeof this.lpps[address] === "undefined") {
+            this.lpps[address] = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, address));
         }
 
-        return this.lpp;
+        return this.lpps[address];
     }
 
 
