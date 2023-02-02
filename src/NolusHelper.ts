@@ -1,5 +1,5 @@
-import { ChainConstants, NolusClient, NolusWallet } from "@nolus/nolusjs";
-import { Oracle } from "@nolus/nolusjs/build/contracts";
+import { ChainConstants, NolusClient, NolusContracts, NolusWallet } from "@nolus/nolusjs";
+import { Lpp, Oracle, Treasury } from "@nolus/nolusjs/build/contracts";
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { nolusOfflineSigner } from "@nolus/nolusjs/build/wallet/NolusWalletFactory";
@@ -47,6 +47,24 @@ const NolusHelper = new class {
         }
 
         return this.oracle;
+    }
+
+    private treasury: Promise<Treasury>;
+    getTreasury(): Promise<Treasury> {
+        if (typeof this.treasury === "undefined") {
+            this.treasury = this.getCosmWasmClient().then(cosmWasmClient => new Treasury(cosmWasmClient, config.contracts.treasury));
+        }
+
+        return this.treasury;
+    }
+
+    private lpp: Promise<Lpp>;
+    getLpp(): Promise<Lpp> {
+        if (typeof this.lpp === "undefined") {
+            this.lpp = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, config.contracts.treasury));
+        }
+
+        return this.lpp;
     }
 
 
