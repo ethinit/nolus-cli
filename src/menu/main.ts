@@ -1,4 +1,6 @@
 import { prompt } from 'inquirer';
+import { NolusHelper } from '../NolusHelper';
+import { MenuLpp } from './lpp';
 import { MenuOracle } from './oracle';
 import { MenuTokens } from './tokens';
 const inquirer = require('inquirer');
@@ -17,6 +19,7 @@ class MenuMain {
                     choices: [
                         { name: 'Tokens', value: 'tokens' },
                         { name: 'Oracle Contract', value: 'oracleContract' },
+                        { name: 'Liquidity Providers Pools', value: 'lpps' },
                         new inquirer.Separator(),
                         { name: 'Exit', value: 'exit' }
                     ]
@@ -34,6 +37,31 @@ class MenuMain {
 
             else if (menuChoice === 'oracleContract') {
                 await this.menuOracle.show();
+            }
+
+            else if (menuChoice === 'lpps') {
+                console.log();
+
+                let options = [];
+                for (let ticker in NolusHelper?.config?.contracts?.lpps) {
+                    options.push({ name: ticker, value: NolusHelper.config.contracts.lpps[ticker] })
+                }
+
+                const { lppAddress } = await prompt([
+                    {
+                        type: 'list',
+                        name: 'lppAddress',
+                        message: 'Select LPP',
+                        choices: [...options, new inquirer.Separator(), "Back"]
+                    }
+                ]);
+
+                if (lppAddress === "Back") {
+                    continue;
+                }
+                const lpp = new MenuLpp(lppAddress);
+                lpp.show();
+
             }
         }
     }

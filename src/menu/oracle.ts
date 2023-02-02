@@ -52,7 +52,7 @@ class MenuOracle {
 
     async showConfig() {
         const oracle = await NolusHelper.getOracle();
-        const contractsOwnerWallet: NolusWallet = await NolusHelper.promptAccount();
+
 
         while (true) {
             console.log();
@@ -78,6 +78,7 @@ class MenuOracle {
                 console.log(await NolusHelper.getOracle().then(oracle => oracle.getConfig()));
             }
             else if (menuChoice === 'update') {
+                const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
                 let priceConfig: OraclePriceConfig;
 
                 while (true) {
