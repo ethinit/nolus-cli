@@ -40,33 +40,6 @@ const NolusHelper = new class {
         return config;
     }
 
-    private oracle: Promise<Oracle>;
-    getOracle(): Promise<Oracle> {
-        if (typeof this.oracle === "undefined") {
-            this.oracle = this.getCosmWasmClient().then(cosmWasmClient => new Oracle(cosmWasmClient, config.contracts.oracle));
-        }
-
-        return this.oracle;
-    }
-
-    private treasury: Promise<Treasury>;
-    getTreasury(): Promise<Treasury> {
-        if (typeof this.treasury === "undefined") {
-            this.treasury = this.getCosmWasmClient().then(cosmWasmClient => new Treasury(cosmWasmClient, config.contracts.treasury));
-        }
-
-        return this.treasury;
-    }
-
-    private lpps: { [address: string]: Promise<Lpp> };
-    getLpp(address: string): Promise<Lpp> {
-        if (typeof this.lpps[address] === "undefined") {
-            this.lpps[address] = this.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, address));
-        }
-
-        return this.lpps[address];
-    }
-
 
     getCosmWasmClient(): Promise<CosmWasmClient> {
         return NolusClient.getInstance().getCosmWasmClient();

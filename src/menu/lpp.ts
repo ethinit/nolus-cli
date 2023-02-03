@@ -11,8 +11,12 @@ class MenuLpp {
 
     }
 
+    private lpp: Promise<Lpp>;
     private getLpp(): Promise<Lpp> {
-        return NolusHelper.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, this.lppAddress));
+        if (typeof this.lpp === "undefined") {
+            this.lpp = NolusHelper.getCosmWasmClient().then(cosmWasmClient => new Lpp(cosmWasmClient, this.lppAddress));
+        }
+        return this.lpp
     }
 
     async show() {

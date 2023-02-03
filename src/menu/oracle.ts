@@ -1,5 +1,5 @@
 import { NolusWallet } from '@nolus/nolusjs';
-import { FeedPrices, OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
+import { FeedPrices, Oracle, OraclePriceConfig } from '@nolus/nolusjs/build/contracts';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
 import { MenuUtil } from './util';
@@ -14,6 +14,15 @@ class MenuOracle {
         } else {
             console.error(error);
         }
+    }
+
+    private oracle: Promise<Oracle>;
+    getOracle(): Promise<Oracle> {
+        if (typeof this.oracle === "undefined") {
+            this.oracle = NolusHelper.getCosmWasmClient().then(cosmWasmClient => new Oracle(cosmWasmClient, NolusHelper.config.contracts.oracle));
+        }
+
+        return this.oracle;
     }
 
     async show() {
@@ -51,7 +60,7 @@ class MenuOracle {
     }
 
     async showConfig() {
-        const oracle = await NolusHelper.getOracle();
+        const oracle = await this.getOracle();
 
 
         while (true) {
@@ -75,7 +84,7 @@ class MenuOracle {
             }
 
             if (menuChoice === 'show') {
-                console.log(await NolusHelper.getOracle().then(oracle => oracle.getConfig()));
+                console.log(await this.getOracle().then(oracle => oracle.getConfig()));
             }
             else if (menuChoice === 'update') {
                 const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
@@ -103,7 +112,7 @@ class MenuOracle {
     }
 
     async showFeeders() {
-        const oracle = await NolusHelper.getOracle();
+        const oracle = await this.getOracle();
         const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
 
         while (true) {
@@ -128,7 +137,7 @@ class MenuOracle {
             }
 
             if (menuChoice === 'list') {
-                const feeders = await NolusHelper.getOracle().then(oracle => oracle.getFeeders());
+                const feeders = await this.getOracle().then(oracle => oracle.getFeeders());
                 console.log();
                 feeders.forEach(address => console.log(address));
 
@@ -169,7 +178,7 @@ class MenuOracle {
 
 
     async showPrices() {
-        const oracle = await NolusHelper.getOracle();
+        const oracle = await this.getOracle();
         //const contractsOwnerWallet: NolusWallet = await NolusHelper.getWallet(NolusHelper.config.keys.contracts_owner);
 
         while (true) {
