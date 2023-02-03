@@ -9,6 +9,9 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "declaration": false,
+    "types": [
+      "node"
+    ],
     "typeRoots": [
       "node_modules/@types"
     ]
