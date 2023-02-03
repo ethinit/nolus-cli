@@ -60,8 +60,7 @@ class MenuMain {
                     continue;
                 }
                 const lpp = new MenuLpp(lppAddress);
-                lpp.show();
-
+                await lpp.show();
             }
         }
     }
