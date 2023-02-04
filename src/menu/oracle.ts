@@ -7,6 +7,10 @@ const inquirer = require('inquirer');
 
 
 class MenuOracle {
+
+    constructor(private oracleAddress: string) {
+
+    }
     private displayOracleError(error: string) {
         let match = error.toString().match(/(\[Oracle\]|oracle::msg::ExecuteMsg:) (.*?): execute wasm contract failed/);
         if (match) {
@@ -19,7 +23,7 @@ class MenuOracle {
     private oracle: Promise<Oracle>;
     getOracle(): Promise<Oracle> {
         if (typeof this.oracle === "undefined") {
-            this.oracle = NolusHelper.getCosmWasmClient().then(cosmWasmClient => new Oracle(cosmWasmClient, NolusHelper.config.contracts.oracle));
+            this.oracle = NolusHelper.getCosmWasmClient().then(cosmWasmClient => new Oracle(cosmWasmClient, this.oracleAddress));
         }
 
         return this.oracle;
@@ -32,7 +36,7 @@ class MenuOracle {
                 {
                     type: 'list',
                     name: 'menuChoice',
-                    message: '[Oracle Contract]',
+                    message: '[Oracle]',
                     choices: [
                         { name: 'Config', value: 'config' },
                         { name: 'Feeders', value: 'feeders' },
@@ -69,7 +73,7 @@ class MenuOracle {
                 {
                     type: 'list',
                     name: 'menuChoice',
-                    message: '[Oracle Contract -> Config]',
+                    message: '[Oracle -> Config]',
                     choices: [
                         { name: 'Show', value: 'show' },
                         { name: 'Update', value: 'update' },
@@ -121,7 +125,7 @@ class MenuOracle {
                 {
                     type: 'list',
                     name: 'menuChoice',
-                    message: '[Oracle Contract -> Feeders]',
+                    message: '[Oracle -> Feeders]',
                     choices: [
                         { name: 'List', value: 'list' },
                         { name: 'Add', value: 'add' },
@@ -187,7 +191,7 @@ class MenuOracle {
                 {
                     type: 'list',
                     name: 'menuChoice',
-                    message: '[Oracle Contract -> Prices]',
+                    message: '[Oracle -> Prices]',
                     choices: [
                         { name: 'Show', value: 'show' },
                         { name: 'Update', value: 'update' },

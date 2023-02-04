@@ -1,6 +1,5 @@
 import { NolusWallet } from '@nolus/nolusjs';
 import { Lpp } from '@nolus/nolusjs/build/contracts';
-import bigInt from 'big-integer';
 import { prompt } from 'inquirer';
 import { Coin, NolusHelper } from '../NolusHelper';
 const inquirer = require('inquirer');
