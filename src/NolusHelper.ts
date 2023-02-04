@@ -1,5 +1,4 @@
-import { ChainConstants, NolusClient, NolusContracts, NolusWallet } from "@nolus/nolusjs";
-import { Lpp, Oracle, Treasury } from "@nolus/nolusjs/build/contracts";
+import { ChainConstants, NolusClient, NolusWallet } from "@nolus/nolusjs";
 import { CosmWasmClient } from '@cosmjs/cosmwasm-stargate';
 import { DirectSecp256k1Wallet } from '@cosmjs/proto-signing';
 import { nolusOfflineSigner } from "@nolus/nolusjs/build/wallet/NolusWalletFactory";
@@ -45,7 +44,7 @@ const NolusHelper = new class {
         return NolusClient.getInstance().getCosmWasmClient();
     }
 
-    makeIBCMinimalDenom(sourceChannelId: string[], coinMinimalDenom: string): string {
+    private makeIBCMinimalDenom(sourceChannelId: string[], coinMinimalDenom: string): string {
         if (sourceChannelId.length == 0) {
             return coinMinimalDenom;
         }
