@@ -40,28 +40,25 @@ class MenuTokens {
 
 
     async showBalances() {
-        let accounts = [];
+        let addresses = [];
         for (let accountName in NolusHelper.config.keys) {
-            accounts.push({ name: accountName, value: NolusHelper.config.keys[accountName] },);
+            let accAddress = (await NolusHelper.getWallet(NolusHelper.config.keys[accountName])).address;
+            addresses.push({ name: accountName, value: accAddress });
         }
 
         console.log();
 
-        let { accountPk } = await prompt([
+        let { address } = await prompt([
             {
                 type: 'list',
-                name: 'accountPk',
+                name: 'address',
                 message: 'Select Account',
-                choices: [...accounts, new inquirer.Separator(), "Other"]
+                choices: [...addresses, new inquirer.Separator(), "Other"]
             }
         ]);
 
-        let address: string;
-        if (accountPk === 'Other') {
+        if (address === 'Other') {
             address = await MenuUtil.askString("Enter address");
-        }
-        else {
-            address = (await NolusHelper.getWallet(accountPk)).address;
         }
 
         console.log();
