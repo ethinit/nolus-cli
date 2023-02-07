@@ -258,7 +258,7 @@ class MenuOracle {
                          * @todo wrong name "price" insteadof "prices"
                          */
                         feedPrices["price"] = JSON.parse(pricesInput);
-                        console.log(feedPrices);
+
                         await oracle.feedPrices(contractsOwnerWallet, feedPrices, "auto")
                             .then(() => console.log(`Preces are updated successfully`))
                             .catch(this.displayOracleError);
